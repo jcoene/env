@@ -52,7 +52,7 @@ func SetDefaults(vals map[string]string) (err error) {
 
 // Determine if an environment variable is set or not.
 func IsSet(key string) bool {
-	return (Get(key) == EmptyString)
+	return (Get(key) != EmptyString)
 }
 
 // Unset an environment variable
