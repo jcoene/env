@@ -16,6 +16,16 @@ func Get(key string) string {
 	return os.Getenv(key)
 }
 
+// Get a key or panic
+func MustGet(key string) string {
+	v := Get(key)
+	if v == "" {
+		panic("missing environment variable " + key)
+	}
+
+	return v
+}
+
 // Get an environment variable if it exists, otherwise return an alternate value.
 func GetOr(key string, alt string) (result string) {
 	if result = Get(key); result == EmptyString {
