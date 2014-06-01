@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"os"
 	"strings"
+	"sync"
 )
 
 const (
@@ -11,9 +12,14 @@ const (
 	EmptyString = ""
 )
 
+var mutex = sync.RWMutex{}
+
 // Get an environment variable, returns "" (empty string) if unset.
-func Get(key string) string {
-	return os.Getenv(key)
+func Get(key string) (result string) {
+	mutex.RLock()
+	result = os.Getenv(key)
+	mutex.RUnlock()
+	return result
 }
 
 // Get a key or panic
@@ -36,8 +42,11 @@ func GetOr(key string, alt string) (result string) {
 }
 
 // Sets an environment variable unconditionally.
-func Set(key, value string) error {
-	return os.Setenv(key, value)
+func Set(key, value string) (err error) {
+	mutex.Lock()
+	err = os.Setenv(key, value)
+	mutex.Unlock()
+	return err
 }
 
 // Sets an environment variable only if it is not already set.
